@@ -1,0 +1,14 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+
+# scratch analysis (screenshots + beautified source used while rebuilding)
+_analysis
+
+logs
+*.log
+npm-debug.log*
+.vite
+_shots
