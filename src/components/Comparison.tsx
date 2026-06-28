@@ -24,15 +24,15 @@ type Cell = "yes" | "partial" | "no";
 const TOOLS = ["Carmonia", "Dealer finance", "Bank loan", "Going direct"] as const;
 
 const ROWS: { label: string; icon: ReactNode; cells: [Cell, Cell, Cell, Cell] }[] = [
-  { label: "Soft search (no credit impact)", icon: <Search width={16} height={16} />, cells: ["yes", "partial", "no", "no"] },
-  { label: "Panel of multiple lenders", icon: <Handshake width={16} height={16} />, cells: ["yes", "partial", "no", "partial"] },
-  { label: "Bad credit considered", icon: <CreditScore width={16} height={16} />, cells: ["yes", "partial", "no", "partial"] },
-  { label: "Buy from any dealer", icon: <Car width={16} height={16} />, cells: ["yes", "no", "yes", "yes"] },
-  { label: "No fees to you", icon: <Savings width={16} height={16} />, cells: ["yes", "partial", "yes", "yes"] },
-  { label: "HP and PCP options", icon: <Percent width={16} height={16} />, cells: ["yes", "yes", "no", "partial"] },
-  { label: "Decision in minutes", icon: <Clock width={16} height={16} />, cells: ["yes", "partial", "no", "no"] },
-  { label: "Part exchange welcome", icon: <Swap width={16} height={16} />, cells: ["yes", "yes", "no", "partial"] },
-  { label: "Dedicated UK support", icon: <Support width={16} height={16} />, cells: ["yes", "partial", "partial", "no"] },
+  { label: "Soft search (no credit impact)", icon: <Search width={20} height={20} />, cells: ["yes", "partial", "no", "no"] },
+  { label: "Panel of multiple lenders", icon: <Handshake width={20} height={20} />, cells: ["yes", "partial", "no", "partial"] },
+  { label: "Bad credit considered", icon: <CreditScore width={20} height={20} />, cells: ["yes", "partial", "no", "partial"] },
+  { label: "Buy from any dealer", icon: <Car width={20} height={20} />, cells: ["yes", "no", "yes", "yes"] },
+  { label: "No fees to you", icon: <Savings width={20} height={20} />, cells: ["yes", "partial", "yes", "yes"] },
+  { label: "HP and PCP options", icon: <Percent width={20} height={20} />, cells: ["yes", "yes", "no", "partial"] },
+  { label: "Decision in minutes", icon: <Clock width={20} height={20} />, cells: ["yes", "partial", "no", "no"] },
+  { label: "Part exchange welcome", icon: <Swap width={20} height={20} />, cells: ["yes", "yes", "no", "partial"] },
+  { label: "Dedicated UK support", icon: <Support width={20} height={20} />, cells: ["yes", "partial", "partial", "no"] },
 ];
 
 function Mark({ cell }: { cell: Cell }) {
@@ -101,7 +101,7 @@ export function Comparison() {
                 <tr key={row.label} className="border-b border-border last:border-b-0">
                   <th scope="row" className="p-4 pl-0 font-normal align-middle">
                     <div className="flex items-center gap-2 font-medium text-foreground">
-                      <span className="text-muted-foreground shrink-0">{row.icon}</span>
+                      <span className="text-muted-foreground shrink-0 inline-flex items-center">{row.icon}</span>
                       {row.label}
                     </div>
                   </th>

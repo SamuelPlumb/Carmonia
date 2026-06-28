@@ -173,9 +173,9 @@ export function PerformanceCard() {
         title="Soft search quote"
         subtitle="See your real eligibility without affecting your credit score."
         items={[
-          { icon: <Shield width={16} height={16} viewBox="0 0 16 16" />, label: "No impact on your credit score" },
-          { icon: <Clock width={16} height={16} />, label: "A decision in minutes" },
-          { icon: <Calculator width={16} height={16} />, label: "See what you could borrow" },
+          { icon: <Shield width={20} height={20} viewBox="0 0 16 16" />, label: "No impact on your credit score" },
+          { icon: <Clock width={20} height={20} />, label: "A decision in minutes" },
+          { icon: <Calculator width={20} height={20} />, label: "See what you could borrow" },
         ]}
       />
       <div className="w-full h-[320px] p-6 px-8 pt-0 flex flex-col gap-4 items-center justify-center">

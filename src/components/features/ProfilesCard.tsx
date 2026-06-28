@@ -101,9 +101,9 @@ export function ProfilesCard() {
         title="Find your dream car"
         subtitle="Get approved in principle, then choose a car you love."
         items={[
-          { icon: <BadgeCheck width={16} height={16} />, label: "Buy from any reputable dealer" },
-          { icon: <FactCheck width={16} height={16} />, label: "Free vehicle and history check" },
-          { icon: <Car width={16} height={16} />, label: "Over 100,000 cars in our members area" },
+          { icon: <BadgeCheck width={20} height={20} />, label: "Buy from any reputable dealer" },
+          { icon: <FactCheck width={20} height={20} />, label: "Free vehicle and history check" },
+          { icon: <Car width={20} height={20} />, label: "Over 100,000 cars in our members area" },
         ]}
       />
       <div className="w-full h-[320px] relative overflow-hidden mask-fade-b">

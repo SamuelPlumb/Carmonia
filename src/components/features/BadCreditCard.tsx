@@ -180,9 +180,9 @@ export function BadCreditCard() {
         title="Bad credit specialists"
         subtitle="We work with lenders who consider CCJs, defaults and past rejections."
         items={[
-          { icon: <FactCheck width={16} height={16} />, label: "CCJs and defaults considered" },
-          { icon: <Groups width={16} height={16} />, label: "Lenders for every credit profile" },
-          { icon: <Shield width={16} height={16} viewBox="0 0 16 16" />, label: "Soft search, no impact on your score" },
+          { icon: <FactCheck width={20} height={20} />, label: "CCJs and defaults considered" },
+          { icon: <Groups width={20} height={20} />, label: "Lenders for every credit profile" },
+          { icon: <Shield width={20} height={20} viewBox="0 0 16 16" />, label: "Soft search, no impact on your score" },
         ]}
       />
       <div className="w-full h-[320px] p-6 px-8 pt-0 flex flex-col items-center justify-center">

@@ -5,8 +5,6 @@ import { Card } from "@/components/ui/card";
 function StepCard({ step, lead, rest }: { step: number; lead: string; rest: string }) {
   return (
     <Card className="bg-muted rounded-xl overflow-hidden border-0 shadow-none gap-0 py-0">
-      {/* Visual area — fixed 200px height, no divider; drop a background image in here */}
-      <div className="h-[200px] relative overflow-hidden" />
       <div className="p-6 flex flex-col items-center gap-3">
         <IconBox>
           <span className="text-base font-semibold text-primary">{step}</span>
@@ -15,6 +13,8 @@ function StepCard({ step, lead, rest }: { step: number; lead: string; rest: stri
           {lead} <span className="text-muted-foreground">{rest}</span>
         </h3>
       </div>
+      {/* Visual area — fixed 200px height, no divider; drop a background image in here */}
+      <div className="h-[200px] relative overflow-hidden" />
     </Card>
   );
 }
