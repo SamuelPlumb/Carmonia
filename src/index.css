@@ -9,6 +9,19 @@
    webfont, so we resolve to it locally on Apple platforms (and fall back to
    the platform UI sans elsewhere) rather than self-hosting font files. */
 
+/* Icons — every Material/MUI icon on the site is a Material Symbols Outlined
+   glyph (rendered via the `symbol()` factory in components/icons.tsx), pinned
+   to one thin weight here so they all match. The webfont + glyph subset is
+   loaded in index.html. (Lucide icons in the nav/FAQ are a separate set and
+   keep their own weight by design.) */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 300,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
 /* ================================================================== */
 /* Theme — standard shadcn token set. Swap these values (or paste a    */
 /* tweakcn theme) and the whole site re-themes. `--primary` drives the */
@@ -25,8 +38,19 @@
   --primary-foreground: #ffffff;
   --secondary: #f5f5f5;
   --secondary-foreground: #181925;
-  --muted: #f5f5f5;
+  --muted: #f7f7f7;
   --muted-foreground: #666666;
+  /* Slider — all dimensions and colours tunable here, not in the component. */
+  --slider-track: #e2e2e2;
+  /* unfilled track, darker than the muted card it sits on */
+  --slider-track-height: 0.375rem;
+  /* track thickness */
+  --slider-thumb: #ffffff;
+  /* handle fill */
+  --slider-thumb-size: 1rem;
+  /* handle diameter */
+  --slider-thumb-border-width: 2px;
+  /* handle border thickness */
   --accent: #f0f0f0;
   --accent-foreground: #181925;
   --destructive: oklch(63% 0.19 23.03);
@@ -59,6 +83,16 @@
   --tracking-base: -0.02em;
   --tracking-heading: -0.0em;
   /* flighty large headings sit near 0 */
+  --leading-heading: 1.0;
+  /* tight line-height shared by all headings */
+  /* Hero motion easing — smooth (Apple-style ease-out) everywhere; springy
+     (overshoot) reserved for the phone's transform track only. */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Horizontal nudge that lands the PHONE (not the image box) on the centre
+     axis. Measured: the device bezel centres at 0.353 of the 930px-wide cut-out,
+     so shift right by (0.5 - 0.353) = 14.7% of the image's own width. */
+  --phone-shift: 14.7%;
   --radius: 0.4rem;
   --shadow-2xs: 0 1px 2px 0 hsl(0 0% 0% / 0.04);
   --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
@@ -83,6 +117,8 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-slider-track: var(--slider-track);
+  --color-slider-thumb: var(--slider-thumb);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
@@ -156,6 +192,7 @@
   h6 {
     font-weight: var(--font-weight-heading);
     letter-spacing: var(--tracking-heading);
+    line-height: var(--leading-heading);
   }
 
   ::selection {
@@ -206,6 +243,23 @@
   }
 }
 
+/* A new feed row expands in at the top of the list — height 0 → full pushes the
+   rows below it down, while it fades and unblurs into place. Used by ProfilesCard
+   to mimic the visitors.now realtime feed (insert-at-top, not a constant scroll). */
+@keyframes feed-in {
+  from {
+    height: 0;
+    opacity: 0;
+    filter: blur(4px);
+  }
+
+  to {
+    height: var(--feed-row-h, 44px);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
 @keyframes float {
 
   0%,
@@ -227,6 +281,99 @@
   100% {
     transform: scale(2.4);
     opacity: 0;
+  }
+}
+
+/* UK globe pins (Mapbox markers built imperatively in UkMapImpl). A plain
+   primary-blue dot that pops in (staggered via --pin-delay) with a continuous
+   pulsing halo — no avatars or labels. */
+.uk-pin {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.uk-pin__dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--primary);
+  border: 2px solid #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: scale(0.4);
+  animation: uk-pin-pop 750ms var(--ease-smooth) var(--pin-delay, 0ms) forwards;
+}
+
+.uk-pin__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid var(--primary);
+  opacity: 0;
+  animation: uk-pin-ping 2.7s ease-out var(--pin-delay, 0ms) infinite;
+}
+
+@keyframes uk-pin-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes uk-pin-ping {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  70%,
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uk-pin__dot {
+    animation: none;
+    transform: scale(1);
+  }
+
+  .uk-pin__ring {
+    animation: none;
+  }
+}
+
+/* Live approval badge — slides/fades up each time a new approval cycles in.
+   The base translateX(-50%) keeps it centred (left-1/2 in the markup). */
+.uk-badge {
+  transform: translateX(-50%);
+  animation: uk-badge-in 950ms var(--ease-smooth) both;
+}
+
+@keyframes uk-badge-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uk-badge {
+    animation: none;
+    transform: translateX(-50%);
   }
 }
 
@@ -271,5 +418,152 @@
   .mask-fade-x {
     -webkit-mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
     mask-image: linear-gradient(to right, transparent, black 18%, black 82%, transparent);
+  }
+
+  /* Crisp at the top (where new rows land), fading out at the bottom (where old
+     rows slide away). Matches the visitors.now feed mask. */
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(to bottom, black 78%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 78%, transparent 100%);
+  }
+}
+
+/* ================================================================== */
+/* Hero — appear-on-load cascade + parallax-ready floating cards       */
+/* ================================================================== */
+
+/* Generic entrance: rise + settle + blur-in. The resting `--rot` is baked into
+   the keyframe so a card's tilt survives after the animation (fill: both holds
+   the `to` state); text elements leave `--rot` unset and get rotate(0deg). */
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: rotate(var(--rot, 0deg)) translateY(20px) scale(0.97);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(var(--rot, 0deg)) translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* The phone is split into two tracks so the springy overshoot never touches
+   opacity/blur (which would flash). The transform track keeps the --phone-shift
+   centring bias at both ends so the load animation lands the phone centred. */
+@keyframes appear-phone-xf {
+  from {
+    transform: translate(var(--phone-shift), 30px) scale(0.96);
+  }
+
+  to {
+    transform: translate(var(--phone-shift), 0) scale(1);
+  }
+}
+
+@keyframes appear-phone-fade {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.appear {
+  animation: appear 600ms var(--ease-smooth) both;
+  animation-delay: var(--appear-delay, 0ms);
+}
+
+.appear-phone {
+  transform-origin: center bottom;
+  animation:
+    appear-phone-xf 850ms var(--ease-spring) both,
+    appear-phone-fade 850ms var(--ease-smooth) both;
+  animation-delay: var(--appear-delay, 0ms);
+}
+
+/* Depth tiers on the card SLOT (the parallax wrapper). Opacity multiplies and
+   blur composes down onto the inner card, so the entrance can still animate the
+   inner card to opacity:1 / blur:0 without erasing the tier's depth. */
+/* Phone + hand — fixed render size, centred via --phone-shift; scales below the
+   desktop breakpoint so it never overflows narrow viewports. */
+.phone-img {
+  width: 722px;
+  height: 984px;
+}
+
+@media (max-width: 1099.98px) {
+  .phone-img {
+    width: 70vw;
+    height: auto;
+  }
+}
+
+/* One notification card — Flighty card chrome exactly: 16px radius, solid white,
+   the soft 6-layer shadow, 16px title / 15px rgba(0,0,0,.5) subtitle. */
+.note-card {
+  display: flex;
+  align-items: center;
+  /* vertically centre the icon */
+  gap: 12px;
+  width: max-content;
+  /* hug content so each card is one line */
+  min-width: 380px;
+  /* …but never narrower than 380px */
+  padding: 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow:
+    rgba(0, 0, 0, 0.02) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.02) 0px 1px 1px 0.5px,
+    rgba(0, 0, 0, 0.02) 0px 3px 3px 1.5px,
+    rgba(0, 0, 0, 0.02) 0px 6px 6px -3px,
+    rgba(0, 0, 0, 0.02) 0px 12px 12px -6px,
+    rgba(0, 0, 0, 0.02) 0px 24px 24px -12px;
+}
+
+.note-card>svg {
+  flex: 0 0 40px;
+}
+
+/* bare 40px icon, no shrink */
+.note-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  white-space: nowrap;
+}
+
+.note-desc {
+  font-size: 15px;
+  line-height: 1.4;
+  color: rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+/* Reduced motion: cancel all entrance/parallax, jump to the final visible state.
+   The phone keeps its --phone-shift centring bias. */
+@media (prefers-reduced-motion: reduce) {
+
+  .appear,
+  .appear-phone {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+  }
+
+  .appear {
+    transform: rotate(var(--rot, 0deg));
+  }
+
+  .appear-phone {
+    transform: translateX(var(--phone-shift));
   }
 }

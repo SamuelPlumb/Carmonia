@@ -1,42 +1,5 @@
-import type { ComponentType, ReactNode, SVGProps } from "react";
-import type { SvgIconProps } from "@mui/material/SvgIcon";
-
-import AccessTimeOutlined from "@mui/icons-material/AccessTimeOutlined";
-import AccountBalanceOutlined from "@mui/icons-material/AccountBalanceOutlined";
-import ArrowForwardOutlined from "@mui/icons-material/ArrowForwardOutlined";
-import AutoAwesomeOutlined from "@mui/icons-material/AutoAwesomeOutlined";
-import AutorenewOutlined from "@mui/icons-material/AutorenewOutlined";
-import BarChartOutlined from "@mui/icons-material/BarChartOutlined";
-import CalculateOutlined from "@mui/icons-material/CalculateOutlined";
-import CallMadeOutlined from "@mui/icons-material/CallMadeOutlined";
-import CancelOutlined from "@mui/icons-material/CancelOutlined";
-import Check from "@mui/icons-material/Check";
-import CheckCircleOutlined from "@mui/icons-material/CheckCircleOutlined";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import CreditScoreOutlined from "@mui/icons-material/CreditScoreOutlined";
-import DirectionsCarOutlined from "@mui/icons-material/DirectionsCarOutlined";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import FactCheckOutlined from "@mui/icons-material/FactCheckOutlined";
-import FavoriteBorderOutlined from "@mui/icons-material/FavoriteBorderOutlined";
-import FlareOutlined from "@mui/icons-material/FlareOutlined";
-import GroupsOutlined from "@mui/icons-material/GroupsOutlined";
-import HandshakeOutlined from "@mui/icons-material/HandshakeOutlined";
-import LocalOfferOutlined from "@mui/icons-material/LocalOfferOutlined";
-import MonetizationOnOutlined from "@mui/icons-material/MonetizationOnOutlined";
-import MoodOutlined from "@mui/icons-material/MoodOutlined";
-import PercentOutlined from "@mui/icons-material/PercentOutlined";
-import PublicOutlined from "@mui/icons-material/PublicOutlined";
-import RemoveCircleOutline from "@mui/icons-material/RemoveCircleOutlineOutlined";
-import SavingsOutlined from "@mui/icons-material/SavingsOutlined";
-import SearchOutlined from "@mui/icons-material/SearchOutlined";
-import SpeedOutlined from "@mui/icons-material/SpeedOutlined";
-import ShieldOutlined from "@mui/icons-material/ShieldOutlined";
-import StarRounded from "@mui/icons-material/StarRounded";
-import StorefrontOutlined from "@mui/icons-material/StorefrontOutlined";
-import SupportAgentOutlined from "@mui/icons-material/SupportAgentOutlined";
-import SwapHorizOutlined from "@mui/icons-material/SwapHorizOutlined";
-import VerifiedOutlined from "@mui/icons-material/VerifiedOutlined";
+import { useState } from "react";
+import type { CSSProperties, ReactNode, SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
@@ -64,53 +27,114 @@ export function Logo(props: IconProps) {
 }
 
 /**
- * Wrap a Material UI icon so it honours the conventions the call sites already use:
- * `width`/`height` (px) set the rendered size, `className` colours it via `currentColor`.
- * MUI icons size via `font-size` (their svg is 1em), so we map the size onto `fontSize`
- * and drop the svg-only props (`viewBox`, `color`) that don't apply to an MUI icon.
+ * Render a Material Symbols (Outlined) glyph as the project's single icon
+ * primitive. Every icon on the site is delivered this way so they all share one
+ * weight: the thin `FILL 0, wght 300, GRAD 0, opsz 24` set in `.material-symbols-outlined`
+ * (index.css). The webfont and its glyph subset are loaded in index.html.
+ *
+ * Call sites keep the previous API unchanged: `width`/`height` (px) set the
+ * rendered size (mapped onto the glyph's `font-size`), and `className`/`style`
+ * colour it via `currentColor`. The svg-only props (`viewBox`, `color`) are
+ * accepted but dropped — they don't apply to a glyph.
  */
-function muiIcon(Icon: ComponentType<SvgIconProps>, defaultSize: number) {
-  return function Icon_({ width, height, viewBox: _viewBox, color: _color, style, ...rest }: IconProps) {
-    const size = width ?? height ?? defaultSize;
-    return <Icon {...(rest as SvgIconProps)} style={{ fontSize: size as number | string, ...(style ?? {}) }} />;
+function symbol(name: string, defaultSize: number) {
+  return function MaterialSymbol({ width, height, viewBox: _viewBox, color: _color, className = "", style }: IconProps) {
+    const size = (width ?? height ?? defaultSize) as number | string;
+    const css: CSSProperties = { fontSize: size, ...(style ?? {}) };
+    return (
+      <span aria-hidden="true" className={`material-symbols-outlined ${className}`} style={css}>
+        {name}
+      </span>
+    );
   };
 }
 
-export const ChevronRight = muiIcon(ChevronRightIcon, 16);
-export const ChevronLeft = muiIcon(ChevronLeftIcon, 16);
-export const ChevronDown = muiIcon(ExpandMore, 14);
-export const Speedometer = muiIcon(SpeedOutlined, 20);
-export const Clock = muiIcon(AccessTimeOutlined, 20);
-export const Heart = muiIcon(FavoriteBorderOutlined, 20);
-export const DollarCircle = muiIcon(MonetizationOnOutlined, 20);
-export const Globe = muiIcon(PublicOutlined, 20);
-export const Smiley = muiIcon(MoodOutlined, 16);
-export const ArrowRight = muiIcon(ArrowForwardOutlined, 16);
-export const Sparkle = muiIcon(AutoAwesomeOutlined, 16);
-export const Burst = muiIcon(FlareOutlined, 16);
-export const Chart = muiIcon(BarChartOutlined, 16);
-export const CheckCircle = muiIcon(CheckCircleOutlined, 20);
-export const MinusCircle = muiIcon(RemoveCircleOutline, 20);
-export const CrossCircle = muiIcon(CancelOutlined, 20);
-export const BadgeCheck = muiIcon(VerifiedOutlined, 16);
-export const Shield = muiIcon(ShieldOutlined, 72);
-export const CheckSmall = muiIcon(Check, 16);
+export const ChevronRight = symbol("chevron_right", 16);
+export const ChevronLeft = symbol("chevron_left", 16);
+export const ChevronDown = symbol("expand_more", 14);
+export const Speedometer = symbol("speed", 20);
+export const Clock = symbol("schedule", 20);
+export const Heart = symbol("favorite", 20);
+export const DollarCircle = symbol("monetization_on", 20);
+export const Globe = symbol("public", 20);
+export const Smiley = symbol("mood", 16);
+export const ArrowRight = symbol("arrow_forward", 16);
+export const Sparkle = symbol("auto_awesome", 16);
+export const Burst = symbol("flare", 16);
+export const Chart = symbol("bar_chart", 16);
+export const CheckCircle = symbol("check_circle", 20);
+export const MinusCircle = symbol("remove_circle", 20);
+export const CrossCircle = symbol("cancel", 20);
+export const BadgeCheck = symbol("verified", 16);
+export const Shield = symbol("shield", 72);
+export const CheckSmall = symbol("check", 16);
 
 /* ---- car-finance icon set ---- */
-export const Car = muiIcon(DirectionsCarOutlined, 20);
-export const CreditScore = muiIcon(CreditScoreOutlined, 20);
-export const Calculator = muiIcon(CalculateOutlined, 20);
-export const Handshake = muiIcon(HandshakeOutlined, 20);
-export const Percent = muiIcon(PercentOutlined, 16);
-export const Search = muiIcon(SearchOutlined, 20);
-export const Swap = muiIcon(SwapHorizOutlined, 20);
-export const Refresh = muiIcon(AutorenewOutlined, 20);
-export const Groups = muiIcon(GroupsOutlined, 16);
-export const Savings = muiIcon(SavingsOutlined, 20);
-export const Tag = muiIcon(LocalOfferOutlined, 16);
-export const FactCheck = muiIcon(FactCheckOutlined, 16);
-export const Star = muiIcon(StarRounded, 16);
-export const Storefront = muiIcon(StorefrontOutlined, 28);
-export const Bank = muiIcon(AccountBalanceOutlined, 28);
-export const Direct = muiIcon(CallMadeOutlined, 28);
-export const Support = muiIcon(SupportAgentOutlined, 16);
+export const Car = symbol("directions_car", 20);
+export const CreditScore = symbol("credit_score", 20);
+export const Calculator = symbol("calculate", 20);
+export const Handshake = symbol("handshake", 20);
+export const Percent = symbol("percent", 16);
+export const Search = symbol("search", 20);
+export const Swap = symbol("swap_horiz", 20);
+export const Refresh = symbol("autorenew", 20);
+export const Groups = symbol("groups", 16);
+export const Savings = symbol("savings", 20);
+export const Tag = symbol("local_offer", 16);
+export const FactCheck = symbol("fact_check", 16);
+export const Star = symbol("star", 16);
+export const Quote = symbol("request_quote", 20);
+export const Key = symbol("key", 20);
+export const Badge = symbol("badge", 20);
+export const TaskCheck = symbol("task_alt", 20);
+export const Signature = symbol("draw", 20);
+export const Storefront = symbol("storefront", 28);
+export const Bank = symbol("account_balance", 28);
+export const Direct = symbol("call_made", 28);
+export const Support = symbol("support_agent", 16);
+
+/* ---- vehicle marque badges ----
+   Official brand marks (public/images) for notifications that name a specific
+   make, rendered as <img> so the BMW gradients and the Audi ring aspect ratio
+   stay intact. Both fit the same 40px icon slot — the wide Audi lockup is
+   letterboxed within the box by the SVG's own preserveAspectRatio. The tint
+   passed by call sites doesn't apply to these. */
+export function BmwBadge({ width, height }: IconProps) {
+  const size = (width ?? height ?? 40) as number;
+  return <img src="/images/bmw.svg" alt="BMW" width={size} height={size} style={{ flex: "0 0 auto", display: "block" }} />;
+}
+
+export function AudiBadge({ width, height }: IconProps) {
+  const size = (width ?? height ?? 40) as number;
+  return <img src="/images/audi.svg" alt="Audi" width={size} height={size} style={{ flex: "0 0 auto", display: "block" }} />;
+}
+
+/* A transparent slot for a vehicle marque logo mark, keyed by make. The make,
+   lowercased and hyphenated, is the asset name — drop `public/images/<make>.png`
+   (e.g. ford.png, land-rover.png, mercedes-benz.png) and it appears here
+   automatically. Tries .png first then falls back to .svg, so the existing
+   bmw.svg / audi.svg keep working alongside uploaded PNGs; if neither exists the
+   slot stays empty. No plate/background/outline — the bare logo mark, contained
+   so it shows in full. */
+const BRAND_EXTS = ["png", "svg"];
+export function BrandLogo({ make, className = "" }: { make: string; className?: string }) {
+  const slug = make
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+  const [ext, setExt] = useState(0);
+  return (
+    <span className={`shrink-0 w-7 h-7 flex items-center justify-center ${className}`}>
+      {ext < BRAND_EXTS.length && (
+        <img
+          key={BRAND_EXTS[ext]}
+          src={`/images/${slug}.${BRAND_EXTS[ext]}`}
+          alt={slug}
+          className="w-full h-full object-contain"
+          onError={() => setExt((n) => n + 1)}
+        />
+      )}
+    </span>
+  );
+}
