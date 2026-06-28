@@ -135,7 +135,7 @@ export default function UkMapImpl({ token }: { token: string }) {
       {/* Live approval badge — re-keyed each cycle so it re-animates in. */}
       <div
         key={idx}
-        className="uk-badge absolute bottom-4 left-1/2 z-10 flex items-center gap-2 rounded-full bg-white py-2 pl-2.5 pr-4 shadow-md ring-1 ring-black/5"
+        className="uk-badge absolute bottom-4 left-1/2 z-10 flex items-center gap-2 rounded-md bg-white py-2 pl-2.5 pr-4 shadow-md ring-1 ring-black/5"
       >
         <BadgeCheck width={20} height={20} className="text-primary shrink-0" />
         <span className="whitespace-nowrap text-sm leading-none">

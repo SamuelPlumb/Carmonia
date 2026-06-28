@@ -3,8 +3,6 @@ import { PerformanceCard } from "./features/PerformanceCard";
 import { RealtimeCard } from "./features/RealtimeCard";
 import { BadCreditCard } from "./features/BadCreditCard";
 import { ProfilesCard } from "./features/ProfilesCard";
-import { RevenueCard } from "./features/RevenueCard";
-import { PartExchangeCard } from "./features/PartExchangeCard";
 
 export function Features() {
   return (
@@ -19,8 +17,6 @@ export function Features() {
         <RealtimeCard />
         <BadCreditCard />
         <ProfilesCard />
-        <RevenueCard />
-        <PartExchangeCard />
       </div>
     </section>
   );

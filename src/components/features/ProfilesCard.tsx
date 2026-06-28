@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Car, BadgeCheck, FactCheck, BrandLogo } from "../icons";
 import { FeatureText } from "./FeatureText";
+import { useFeatureTick } from "./featureTick";
 import { Card } from "@/components/ui/card";
 
 type Profile = {
@@ -36,10 +37,10 @@ const PROFILES: Profile[] = [
 ];
 
 // Insert-at-top feed (mirrors the visitors.now realtime list): keep `ROW_H` in
-// sync with the `feed-in` keyframe in index.css. A new row every `TICK_MS`.
+// sync with the `feed-in` keyframe in index.css. A new row arrives on each shared
+// feature tick (see featureTick.ts), in lock-step with the credit-score dial.
 const ROW_H = 44;
 const ENTER_MS = 560;
-const TICK_MS = 2200;
 const MAX_ROWS = 9; // fills the 320px window with a couple sliding under the fade
 
 type FeedRow = { id: number; fresh: boolean; profile: Profile };
@@ -79,20 +80,18 @@ export function ProfilesCard() {
   );
   const next = useRef(MAX_ROWS);
 
-  useEffect(() => {
-    const t = setInterval(() => {
-      setRows((prev) => {
-        const row: FeedRow = {
-          id: next.current,
-          fresh: true,
-          profile: PROFILES[next.current % PROFILES.length],
-        };
-        next.current += 1;
-        return [row, ...prev].slice(0, MAX_ROWS);
-      });
-    }, TICK_MS);
-    return () => clearInterval(t);
-  }, []);
+  // Add a row on the shared feature tick (in lock-step with the credit dial).
+  useFeatureTick(() => {
+    setRows((prev) => {
+      const row: FeedRow = {
+        id: next.current,
+        fresh: true,
+        profile: PROFILES[next.current % PROFILES.length],
+      };
+      next.current += 1;
+      return [row, ...prev].slice(0, MAX_ROWS);
+    });
+  });
 
   return (
     <Card className="flex flex-col bg-muted rounded-xl min-h-[280px] overflow-hidden border-0 shadow-none gap-0 py-0">

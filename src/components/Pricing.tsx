@@ -148,7 +148,7 @@ export function Pricing() {
                 />
               </div>
 
-              <Button className="w-full">Get your quote now</Button>
+              <Button className="w-full">Get my quote now</Button>
             </div>
           </div>
         </Card>

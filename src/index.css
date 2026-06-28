@@ -9,14 +9,15 @@
    webfont, so we resolve to it locally on Apple platforms (and fall back to
    the platform UI sans elsewhere) rather than self-hosting font files. */
 
-/* Icons — every Material/MUI icon on the site is a Material Symbols Outlined
-   glyph (rendered via the `symbol()` factory in components/icons.tsx), pinned
-   to one thin weight here so they all match. The webfont + glyph subset is
-   loaded in index.html. (Lucide icons in the nav/FAQ are a separate set and
-   keep their own weight by design.) */
+/* Icons — every Material/MUI icon on the site is a Material Symbols glyph
+   (rendered via the `symbol()` factory in components/icons.tsx), pinned to one
+   weight here so they all match. `FILL 1` makes the whole set render filled
+   rather than outlined; flip it to 0 to go back to outlines site-wide. The
+   webfont + glyph subset is loaded in index.html. (Lucide icons in the nav/FAQ
+   are stroke glyphs from a separate set and keep their own look by design.) */
 .material-symbols-outlined {
   font-variation-settings:
-    "FILL" 0,
+    "FILL" 1,
     "wght" 300,
     "GRAD" 0,
     "opsz" 24;
@@ -374,6 +375,30 @@
   .uk-badge {
     animation: none;
     transform: translateX(-50%);
+  }
+}
+
+/* Score-dial band label — rolls up and fades in each time the band changes,
+   echoing the .uk-badge live-approval animation on the map. */
+@keyframes band-roll {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.band-roll {
+  animation: band-roll 450ms var(--ease-smooth) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .band-roll {
+    animation: none;
   }
 }
 
