@@ -1,64 +1,105 @@
-import { Car, BadgeCheck, FactCheck } from "../icons";
+import { useEffect, useRef, useState } from "react";
+import { Car, BadgeCheck, FactCheck, BrandLogo } from "../icons";
 import { FeatureText } from "./FeatureText";
-import { Avatar } from "../Avatar";
 import { Card } from "@/components/ui/card";
 
 type Profile = {
-  name: string; // car model
-  flag: string; // make's country of origin
-  source: string; // fuel type
-  revenue?: string; // listing price
-  time: string; // registration year
-  identified?: boolean; // history-checked
+  brand: string; // marque — keys the logo asset (public/images/<brand>.png)
+  name: string; // car model (display)
+  price: string; // listing price
+  year: string; // registration year
 };
 
+// Interleaved by brand so the visible window shows a varied mix straight away
+// (the feed seeds the first MAX_ROWS in order, then cycles through the rest).
 const PROFILES: Profile[] = [
-  { name: "Ford Fiesta", flag: "🇺🇸", source: "Petrol", revenue: "£8,995", time: "2019", identified: true },
-  { name: "Volkswagen Golf", flag: "🇩🇪", source: "Diesel", revenue: "£12,450", time: "2020" },
-  { name: "BMW 3 Series", flag: "🇩🇪", source: "Hybrid", revenue: "£18,900", time: "2021", identified: true },
-  { name: "Audi A3", flag: "🇩🇪", source: "Petrol", revenue: "£14,250", time: "2020" },
-  { name: "Nissan Qashqai", flag: "🇯🇵", source: "Petrol", revenue: "£11,750", time: "2019", identified: true },
-  { name: "Tesla Model 3", flag: "🇺🇸", source: "Electric", revenue: "£24,500", time: "2022" },
-  { name: "Vauxhall Corsa", flag: "🇬🇧", source: "Petrol", revenue: "£7,495", time: "2018", identified: true },
-  { name: "Mercedes A-Class", flag: "🇩🇪", source: "Diesel", revenue: "£16,800", time: "2021" },
-  { name: "Toyota Yaris", flag: "🇯🇵", source: "Hybrid", revenue: "£10,995", time: "2020", identified: true },
-  { name: "Kia Sportage", flag: "🇰🇷", source: "Petrol", revenue: "£13,250", time: "2019" },
+  { brand: "Volkswagen", name: "Volkswagen Golf", price: "£14,995", year: "2020" },
+  { brand: "BMW", name: "BMW 3 Series", price: "£17,995", year: "2020" },
+  { brand: "Tesla", name: "Tesla Model 3", price: "£17,995", year: "2021" },
+  { brand: "Ford", name: "Ford Fiesta", price: "£9,995", year: "2020" },
+  { brand: "Mercedes-Benz", name: "Mercedes-Benz A Class", price: "£18,495", year: "2021" },
+  { brand: "Hyundai", name: "Hyundai Tucson", price: "£19,995", year: "2022" },
+  { brand: "Kia", name: "Kia Sportage", price: "£18,995", year: "2022" },
+  { brand: "Nissan", name: "Nissan Qashqai", price: "£15,995", year: "2021" },
+  { brand: "Audi", name: "Audi A3", price: "£17,495", year: "2021" },
+  { brand: "Toyota", name: "Toyota Yaris", price: "£14,495", year: "2022" },
+  { brand: "Land Rover", name: "Land Rover Range Rover Evoque", price: "£22,995", year: "2021" },
+  { brand: "MINI", name: "MINI Cooper", price: "£11,495", year: "2019" },
+  { brand: "Vauxhall", name: "Vauxhall Corsa", price: "£9,495", year: "2021" },
+  { brand: "Ford", name: "Ford Focus", price: "£10,995", year: "2019" },
+  { brand: "BMW", name: "BMW 1 Series", price: "£15,495", year: "2020" },
+  { brand: "Volkswagen", name: "Volkswagen Polo", price: "£11,495", year: "2020" },
+  { brand: "Mercedes-Benz", name: "Mercedes-Benz C Class", price: "£18,995", year: "2020" },
+  { brand: "Nissan", name: "Nissan Juke", price: "£11,995", year: "2020" },
+  { brand: "Ford", name: "Ford Puma", price: "£13,495", year: "2021" },
+  { brand: "Vauxhall", name: "Vauxhall Astra", price: "£9,995", year: "2019" },
 ];
 
-function Row({ p }: { p: Profile }) {
+// Insert-at-top feed (mirrors the visitors.now realtime list): keep `ROW_H` in
+// sync with the `feed-in` keyframe in index.css. A new row every `TICK_MS`.
+const ROW_H = 44;
+const ENTER_MS = 560;
+const TICK_MS = 2200;
+const MAX_ROWS = 9; // fills the 320px window with a couple sliding under the fade
+
+type FeedRow = { id: number; fresh: boolean; profile: Profile };
+
+function Row({ row }: { row: FeedRow }) {
+  const p = row.profile;
   return (
-    <div className="w-full flex items-center shrink-0 gap-4 overflow-hidden px-8" style={{ height: 44 }}>
-      <div className="flex items-center">
-        <span className="rounded-full overflow-hidden border border-background">
-          <Avatar name={p.name} size={20} />
-        </span>
-        <span className="-ml-1 text-[13px] leading-none border border-background rounded-full bg-muted">{p.flag}</span>
-      </div>
-      <div className="flex-1 flex items-center gap-1 overflow-hidden min-w-0">
+    <div
+      className="w-full flex items-center shrink-0 gap-3 overflow-hidden px-8"
+      style={{
+        height: ROW_H,
+        ...(row.fresh ? { animation: `feed-in ${ENTER_MS}ms cubic-bezier(0.22, 1, 0.36, 1) both` } : null),
+      }}
+    >
+      <BrandLogo make={p.brand} />
+      <div className="flex-1 flex items-baseline gap-2 overflow-hidden min-w-0">
         <span className="text-sm font-medium truncate text-foreground">{p.name}</span>
-        {p.identified && <BadgeCheck className="text-primary shrink-0" />}
+        <span className="shrink-0 text-xs text-muted-foreground">{p.year}</span>
       </div>
-      <div className="hidden md:flex w-28 items-center">
-        <span className="max-w-full text-xs inline-flex h-6 pl-1.5 pr-2.5 gap-1 rounded-md items-center bg-background border border-foreground/10">
-          <span className="w-4 h-4 rounded-sm bg-accent flex items-center justify-center text-[9px] font-semibold text-muted-foreground shrink-0">
-            {p.source[0]}
-          </span>
-          <span className="truncate text-foreground">{p.source}</span>
-        </span>
-      </div>
-      <span className="w-16 font-medium shrink-0 text-[13px] text-primary">{p.revenue ?? ""}</span>
-      <span className="shrink-0 text-[13px] text-right text-muted-foreground w-10">{p.time}</span>
+      <span className="w-16 shrink-0 text-right text-[13px] font-bold text-primary">{p.price}</span>
+      <span className="shrink-0 inline-flex h-6 items-center gap-1 rounded-md pl-1.5 pr-2 text-xs bg-background border border-foreground/10 text-foreground">
+        <BadgeCheck className="text-primary" width={14} height={14} />
+        Approved
+      </span>
     </div>
   );
 }
 
 export function ProfilesCard() {
+  // Seed a full window so the card never flashes empty; seeded rows don't animate.
+  const [rows, setRows] = useState<FeedRow[]>(() =>
+    Array.from({ length: MAX_ROWS }, (_, i) => ({
+      id: i,
+      fresh: false,
+      profile: PROFILES[i % PROFILES.length],
+    })),
+  );
+  const next = useRef(MAX_ROWS);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setRows((prev) => {
+        const row: FeedRow = {
+          id: next.current,
+          fresh: true,
+          profile: PROFILES[next.current % PROFILES.length],
+        };
+        next.current += 1;
+        return [row, ...prev].slice(0, MAX_ROWS);
+      });
+    }, TICK_MS);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <Card className="flex flex-col bg-muted rounded-xl min-h-[280px] overflow-hidden border-0 shadow-none gap-0 py-0">
       <FeatureText
         accent="pink"
         icon={<Car width={20} height={20} className="text-primary" />}
-        title="Browse and buy any car"
+        title="Find your dream car"
         subtitle="Get approved in principle, then choose a car you love."
         items={[
           { icon: <BadgeCheck width={16} height={16} />, label: "Buy from any reputable dealer" },
@@ -66,10 +107,10 @@ export function ProfilesCard() {
           { icon: <Car width={16} height={16} />, label: "Over 100,000 cars in our members area" },
         ]}
       />
-      <div className="w-full h-[320px] relative overflow-hidden mask-fade-y">
-        <div className="flex flex-col" style={{ animation: "marquee-vertical 26s linear infinite" }}>
-          {[...PROFILES, ...PROFILES].map((p, i) => (
-            <Row key={`${p.name}-${i}`} p={p} />
+      <div className="w-full h-[320px] relative overflow-hidden mask-fade-b">
+        <div className="flex flex-col">
+          {rows.map((row) => (
+            <Row key={row.id} row={row} />
           ))}
         </div>
       </div>

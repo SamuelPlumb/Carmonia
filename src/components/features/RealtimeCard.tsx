@@ -1,6 +1,6 @@
 import { Handshake, BadgeCheck, Tag, Groups } from "../icons";
 import { FeatureText } from "./FeatureText";
-import { Globe } from "../Globe";
+import { UkMap } from "../UkMap";
 import { Card } from "@/components/ui/card";
 
 export function RealtimeCard() {
@@ -17,8 +17,8 @@ export function RealtimeCard() {
           { icon: <Groups width={16} height={16} />, label: "Deals for all credit profiles" },
         ]}
       />
-      <div className="w-full h-[320px] relative overflow-hidden">
-        <Globe />
+      <div className="w-full h-[320px] shrink-0 relative overflow-hidden">
+        <UkMap />
       </div>
     </Card>
   );

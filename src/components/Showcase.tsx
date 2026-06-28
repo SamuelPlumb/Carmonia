@@ -1,0 +1,173 @@
+import type { CSSProperties, ComponentType, SVGProps } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Percent,
+  CheckCircle,
+  Car,
+  Quote,
+  Key,
+  Badge,
+  Signature,
+  BmwBadge,
+  AudiBadge,
+} from "./icons";
+
+/* Hero scene: the hand + phone (756×1024, optically centred, top layer) ringed by
+   notification cards laid out like Flighty's "At the airport" state — five rows,
+   each pairing a left + right card across a variable gap, with cards alternating
+   foreground (opacity 1) / background (opacity 0.2) for depth. No rotation, no
+   scroll parallax; the load cascade still plays. */
+
+type CSSVars = CSSProperties & Record<`--${string}`, string | number>;
+type IconType = ComponentType<SVGProps<SVGSVGElement>>;
+
+type Card = { Icon: IconType; tint: string; title: string; desc: string };
+type Slot = { card: Card; o: number };
+type Row = { w: number; l: Slot; r?: Slot; lx?: number; rx?: number };  // lx/rx: nudge the left/right card inward (px)
+
+// Every icon is tinted with the brand primary — the design system is a single
+// blue accent over neutrals (no green/amber tokens), so the cards stay on-system
+// and let opacity/depth (not colour) carry the visual hierarchy.
+const PRIMARY = "var(--primary)";
+
+// Variable row widths create the staggered scatter; opacity (o) follows the
+// Framer's 0.2/1 alternation so foreground cards pop and the rest recede.
+const ROWS: Row[] = [
+  {
+    w: 1140,
+    rx: 50,  // tuck this right card in so its icon sits behind the phone
+    lx: 80,  // tuck this right card in so its icon sits behind the phone
+    l: { card: { Icon: BmwBadge, tint: PRIMARY, title: "You've paid off your car 🎉 ", desc: "The BMW 330d is all yours" }, o: 0.2 },
+    r: { card: { Icon: Car, tint: PRIMARY, title: "You're pre-approved 🚗", desc: "Up to £15,000 towards your next car" }, o: 1 },
+  },
+  {
+    w: 1180,
+    lx: 80,
+    rx: 30,  // tuck this right card in so its icon sits behind the phone
+    l: { card: { Icon: Percent, tint: PRIMARY, title: "Rate held for 14 days 🔒", desc: "9.9% APR locked while you decide" }, o: 1 },
+    r: { card: { Icon: Quote, tint: PRIMARY, title: "Your finance offers are in 💷", desc: "3 lenders matched, from 9.9% APR" }, o: 0.2 },
+  },
+  {
+    w: 1280,
+    lx: 110,
+    l: { card: { Icon: Badge, tint: PRIMARY, title: "We need two documents 📄", desc: "Photo ID and proof of address to continue" }, o: 0.2 },
+    r: { card: { Icon: Key, tint: PRIMARY, title: "Finance complete 🥳", desc: "Paid to the dealer — you're ready to drive away" }, o: 1 },
+  },
+  {
+    w: 1240,
+    lx: 40,
+    l: { card: { Icon: CheckCircle, tint: PRIMARY, title: "Documents verified 👍", desc: "ID and address confirmed — onto approval" }, o: 1 },
+    r: { card: { Icon: AudiBadge, tint: PRIMARY, title: "Your Audi A4 finance is approved 🎉", desc: "£14,200 over 48 months" }, o: 0.2 },
+  },
+  {
+    w: 1320,
+    lx: 110,
+    l: { card: { Icon: Signature, tint: PRIMARY, title: "Your agreement's ready to sign ✍️", desc: "£312/mo at 9.9% APR" }, o: 1 },
+    r: { card: { Icon: CheckCircle, tint: PRIMARY, title: "Repayment received ✅", desc: "£312 received, next due 1 Aug" }, o: 1 },
+  },
+];
+
+function NotifCard({
+  card,
+  opacity,
+  active,
+  shift = 0,
+  delay,
+}: {
+  card: Card;
+  opacity: number;
+  active: boolean;
+  shift?: number;
+  delay: number;
+}) {
+  const { Icon, tint, title, desc } = card;
+  // Once the phone scrolls into focus, swap tiers: faded cards come forward,
+  // the previously-active cards recede. Crossfade via the opacity transition.
+  const op = active ? (opacity > 0.5 ? 0.2 : 1) : opacity;
+  return (
+    <div
+      className="shrink-0"
+      style={{
+        opacity: op,
+        transform: shift ? `translateX(${shift}px)` : undefined,
+        transition: "opacity 0.7s ease",
+      }}
+    >
+      <div className="note-card appear" style={{ "--appear-delay": `${delay}ms` } as CSSVars}>
+        <Icon width={40} height={40} style={{ color: tint }} />
+        <div className="min-w-0">
+          <p className="note-title">{title}</p>
+          <p className="note-desc">{desc}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// As the hero nears the end of its scroll, dissolve the whole notification
+// layer. p = how far the scene has scrolled up as a fraction of its own height;
+// notifications hold through most of the scroll, then fade across this window.
+const FADE_START = 0.6;  // p at which the cards begin to fade
+const FADE_END = 0.9;    // p by which they're fully gone (≈ full hero scroll)
+
+export function Showcase() {
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  const [fade, setFade] = useState(1);
+
+  // Flip the card tiers once the phone has scrolled up into focus (reversible),
+  // and fade the cards out entirely as we approach full hero scroll.
+  useEffect(() => {
+    const el = sceneRef.current;
+    if (!el) return;
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const rect = el.getBoundingClientRect();
+      setActive(rect.top <= window.innerHeight * 0.4);
+      // -rect.top is px scrolled past the scene's top; over its own height.
+      const p = rect.height ? -rect.top / rect.height : 0;
+      const f = 1 - (p - FADE_START) / (FADE_END - FADE_START);
+      setFade(Math.min(1, Math.max(0, f)));
+    };
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <section className="relative w-full">
+      <div ref={sceneRef} className="relative mx-auto max-w-6xl px-5">
+        {/* Notification cards, staggered rows behind the phone (desktop only).
+            The whole layer fades out as the hero nears full scroll (see fade). */}
+        <div
+          className="hidden lg:flex absolute left-1/2 -translate-x-1/2 top-[9%] z-[1] flex-col items-center gap-5"
+          style={{ opacity: fade }}
+        >
+          {ROWS.map((row, ri) => (
+            <div key={ri} className="flex justify-between items-start" style={{ width: row.w }}>
+              <NotifCard card={row.l.card} opacity={row.l.o} active={active} shift={row.lx} delay={440 + ri * 2 * 55} />
+              {row.r && <NotifCard card={row.r.card} opacity={row.r.o} active={active} shift={row.rx != null ? -row.rx : undefined} delay={440 + (ri * 2 + 1) * 55} />}
+            </div>
+          ))}
+        </div>
+
+        {/* Hand + phone (756×1024), device optically centred, on top of the cards. */}
+        <img
+          src="/images/hero-phone-cutout.png"
+          alt="Carmonia app on iPhone"
+          width={930}
+          height={1260}
+          className="phone-img appear-phone relative z-10 block mx-auto max-w-none"
+          style={{ "--appear-delay": "320ms" } as CSSVars}
+        />
+      </div>
+    </section>
+  );
+}

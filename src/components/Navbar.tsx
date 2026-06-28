@@ -60,7 +60,7 @@ export function Navbar() {
             <a href="#" className="text-sm font-medium text-background/60 hover:text-background transition-colors">
               Sign in
             </a>
-            <Button size="sm">Apply now</Button>
+            <Button size="sm">Get my quote</Button>
             <button
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
@@ -135,7 +135,7 @@ export function Navbar() {
             >
               Sign in
             </a>
-            <Button size="sm">Apply now</Button>
+            <Button size="sm">Get my quote</Button>
           </div>
         </div>
 
