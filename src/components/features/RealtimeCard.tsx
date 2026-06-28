@@ -12,9 +12,9 @@ export function RealtimeCard() {
         title="Panel of lenders"
         subtitle="One application puts you in front of our whole panel of UK lenders."
         items={[
-          { icon: <BadgeCheck width={16} height={16} />, label: "Over 15 trusted lenders" },
-          { icon: <Tag width={16} height={16} />, label: "One form, multiple offers" },
-          { icon: <Groups width={16} height={16} />, label: "Deals for all credit profiles" },
+          { icon: <BadgeCheck width={20} height={20} />, label: "Over 15 trusted lenders" },
+          { icon: <Tag width={20} height={20} />, label: "One form, multiple offers" },
+          { icon: <Groups width={20} height={20} />, label: "Deals for all credit profiles" },
         ]}
       />
       <div className="w-full h-[320px] shrink-0 relative overflow-hidden">

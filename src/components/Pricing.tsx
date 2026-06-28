@@ -148,7 +148,7 @@ export function Pricing() {
                 />
               </div>
 
-              <Button className="w-full">Get your quote now</Button>
+              <Button className="w-full">Get my quote now</Button>
             </div>
           </div>
         </Card>
@@ -161,7 +161,7 @@ export function Pricing() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4">
             {FEATURES.map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-2.5">
-                <Icon width={18} className="text-primary shrink-0" />
+                <Icon width={20} height={20} className="text-primary shrink-0" />
                 <span className="text-sm font-medium text-foreground">{label}</span>
               </div>
             ))}

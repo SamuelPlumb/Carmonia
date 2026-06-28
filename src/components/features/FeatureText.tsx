@@ -27,10 +27,10 @@ export function FeatureText({ accent, icon, title, subtitle, items }: FeatureTex
         <h3 className={`text-2xl/7 font-medium ${ACCENT_TEXT[accent]}`}>{title}</h3>
         <p className="text-2xl/7 font-medium text-foreground">{subtitle}</p>
       </div>
-      <ul className="flex flex-col gap-1">
+      <ul className="flex flex-col gap-2">
         {items.map((it) => (
           <li key={it.label} className="flex items-center gap-2">
-            <span className={`${ACCENT_TEXT[accent]} shrink-0`}>{it.icon}</span>
+            <span className={`${ACCENT_TEXT[accent]} shrink-0 inline-flex items-center`}>{it.icon}</span>
             <span className="text-sm font-medium text-foreground">{it.label}</span>
           </li>
         ))}
