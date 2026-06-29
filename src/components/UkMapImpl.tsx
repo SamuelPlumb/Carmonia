@@ -126,7 +126,7 @@ export default function UkMapImpl({ token }: { token: string }) {
           card's overflow-hidden clips it. h-full/w-full (not absolute inset-0)
           because mapbox-gl forces .mapboxgl-map to position:relative. */}
       <div
-        className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-[25%] w-[300%] aspect-square"
+        className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-[25%] h-[450%] aspect-square"
         aria-label="Active across the United Kingdom"
       >
         <div ref={containerRef} className="h-full w-full" />

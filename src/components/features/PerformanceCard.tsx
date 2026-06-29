@@ -178,7 +178,7 @@ export function PerformanceCard() {
           { icon: <Calculator width={20} height={20} />, label: "See what you could borrow" },
         ]}
       />
-      <div className="w-full h-[320px] p-6 px-8 pt-0 flex flex-col gap-4 items-center justify-center">
+      <div className="w-full h-[320px] p-4 pt-0 md:p-6 md:px-8 md:pt-0 flex flex-col gap-4 items-center justify-center">
         <ScoreRing />
       </div>
     </Card>

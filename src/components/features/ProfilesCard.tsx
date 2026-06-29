@@ -49,7 +49,7 @@ function Row({ row }: { row: FeedRow }) {
   const p = row.profile;
   return (
     <div
-      className="w-full flex items-center shrink-0 gap-3 overflow-hidden px-8"
+      className="w-full flex items-center shrink-0 gap-3 overflow-hidden px-4 md:px-8"
       style={{
         height: ROW_H,
         ...(row.fresh ? { animation: `feed-in ${ENTER_MS}ms cubic-bezier(0.22, 1, 0.36, 1) both` } : null),
@@ -58,9 +58,9 @@ function Row({ row }: { row: FeedRow }) {
       <BrandLogo make={p.brand} />
       <div className="flex-1 flex items-baseline gap-2 overflow-hidden min-w-0">
         <span className="text-sm font-medium truncate text-foreground">{p.name}</span>
-        <span className="shrink-0 text-xs text-muted-foreground">{p.year}</span>
+        <span className="hidden md:inline shrink-0 text-xs text-muted-foreground">{p.year}</span>
       </div>
-      <span className="w-16 shrink-0 text-right text-[13px] font-bold text-primary">{p.price}</span>
+      <span className="hidden md:inline w-16 shrink-0 text-right text-[13px] font-bold text-primary">{p.price}</span>
       <span className="shrink-0 inline-flex h-6 items-center gap-1 rounded-md pl-1.5 pr-2 text-xs bg-background border border-foreground/10 text-foreground">
         <BadgeCheck className="text-primary" width={14} height={14} />
         Approved

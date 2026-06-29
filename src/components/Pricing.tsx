@@ -83,7 +83,7 @@ export function Pricing() {
         >
           <div className="grid md:grid-cols-2">
             {/* left: breakdown */}
-            <div className="flex flex-col gap-6 p-7 md:p-8">
+            <div className="flex flex-col gap-6 p-4 md:p-8">
               {/* monthly budget slider */}
               <div className="flex flex-col gap-3">
                 <h3 className="font-medium text-foreground">My monthly budget</h3>
@@ -125,7 +125,7 @@ export function Pricing() {
                         type="button"
                         onClick={() => setScore(s)}
                         aria-pressed={active}
-                        className="relative z-10 flex-1 rounded-md h-8 px-2 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                        className="relative z-10 flex-1 rounded-md h-8 px-1 text-xs sm:px-2 sm:text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
                       >
                         <span className={`transition-colors ${active ? "text-foreground" : "text-muted-foreground"}`}>
                           {s}
@@ -138,13 +138,13 @@ export function Pricing() {
             </div>
 
             {/* right: result */}
-            <div className="flex flex-col gap-4 p-7 md:p-8 border-t md:border-t-0 md:border-l border-border text-center">
+            <div className="flex flex-col gap-4 p-4 md:p-8 border-t md:border-t-0 md:border-l border-border text-center">
               <div className="flex-1 flex flex-col items-center justify-center gap-2 rounded-lg bg-background p-6">
                 <p className="text-sm text-muted-foreground">You could get a car worth</p>
                 <NumberFlow
                   value={affordable}
                   format={{ style: "currency", currency: "GBP", maximumFractionDigits: 0 }}
-                  className="text-7xl font-bold text-primary leading-none tracking-[-0.025em]"
+                  className="text-5xl sm:text-6xl md:text-7xl font-bold text-primary leading-none tracking-[-0.025em]"
                 />
               </div>
 
@@ -156,7 +156,7 @@ export function Pricing() {
         {/* what's included — its own band between calculator and the example */}
         <Card
           ref={gridRef}
-          className={`bg-muted rounded-3xl border-0 shadow-none mt-4 p-7 md:p-8 ${gridShown ? "appear" : "opacity-0"}`}
+          className={`bg-muted rounded-3xl border-0 shadow-none mt-4 p-4 md:p-8 ${gridShown ? "appear" : "opacity-0"}`}
         >
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4">
             {FEATURES.map(({ icon: Icon, label }) => (
@@ -171,7 +171,7 @@ export function Pricing() {
         {/* representative example — FCA-required illustration */}
         <Card
           ref={exampleRef}
-          className={`bg-muted rounded-3xl border-0 shadow-none mt-4 p-7 md:p-8 gap-3 ${exampleShown ? "appear" : "opacity-0"}`}
+          className={`bg-muted rounded-3xl border-0 shadow-none mt-4 p-4 md:p-8 gap-3 ${exampleShown ? "appear" : "opacity-0"}`}
         >
           <h3 className="text-sm font-semibold text-foreground">Representative Example</h3>
           <p className="text-sm text-muted-foreground">
