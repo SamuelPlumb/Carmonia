@@ -93,6 +93,7 @@ export const Chart = symbol("bar_chart", 16);
 export const CheckCircle = symbol("check_circle", 20);
 export const MinusCircle = symbol("remove_circle", 20);
 export const CrossCircle = symbol("cancel", 20);
+export const PlusCircle = symbol("add_circle", 20);
 export const BadgeCheck = symbol("verified", 16);
 export const Shield = symbol("shield", 72);
 export const CheckSmall = symbol("check", 16);

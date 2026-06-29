@@ -41,6 +41,13 @@
   --secondary-foreground: #181925;
   --muted: #f7f7f7;
   --muted-foreground: #666666;
+  /* Amber lifted from the credit-score dial's "Poor" band (BadCreditCard).
+     Used for "it depends" / optional states that need to read apart from the
+     blue "yes" and red "no" without looking negative. */
+  --optional: #f89937;
+  /* Red from the dial's "Bad" band — for "no"/unavailable states. Kept separate
+     from --destructive (the UI's interactive danger colour). */
+  --negative: #bd2327;
   /* Slider — all dimensions and colours tunable here, not in the component. */
   --slider-track: #e2e2e2;
   /* unfilled track, darker than the muted card it sits on */
@@ -118,6 +125,8 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-optional: var(--optional);
+  --color-negative: var(--negative);
   --color-slider-track: var(--slider-track);
   --color-slider-thumb: var(--slider-thumb);
   --color-accent: var(--accent);
@@ -515,11 +524,14 @@
 /* Depth tiers on the card SLOT (the parallax wrapper). Opacity multiplies and
    blur composes down onto the inner card, so the entrance can still animate the
    inner card to opacity:1 / blur:0 without erasing the tier's depth. */
-/* Phone + hand — fixed render size, centred via --phone-shift; scales below the
-   desktop breakpoint so it never overflows narrow viewports. */
+/* Phone + hand — centred via --phone-shift. Above the desktop breakpoint the
+   render size tracks viewport HEIGHT via --hero-scale (set from JS in Showcase,
+   à la Flighty): 722×984 is the full size at scale 1, shrinking on shorter
+   screens so a 13" laptop doesn't get a giant phone. Below the breakpoint it
+   falls back to width-based (70vw) so it never overflows narrow viewports. */
 .phone-img {
-  width: 722px;
-  height: 984px;
+  width: calc(722px * var(--hero-scale, 1));
+  height: calc(984px * var(--hero-scale, 1));
 }
 
 @media (max-width: 1099.98px) {
