@@ -3,7 +3,7 @@ import { FeatureText } from "./FeatureText";
 import { UkMap } from "../UkMap";
 import { Card } from "@/components/ui/card";
 
-export function RealtimeCard() {
+export function LendersCard() {
   return (
     <Card className="bg-muted rounded-xl min-h-[280px] overflow-hidden flex flex-col border-0 shadow-none gap-0 py-0">
       <FeatureText

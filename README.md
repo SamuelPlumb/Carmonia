@@ -1,34 +1,32 @@
-# Visitors — homepage rebuild
+# Carmonia — car finance landing page
 
-A faithful, from-scratch rebuild of the [visitors.now](https://visitors.now) homepage — a
-privacy-friendly analytics landing page — recreated as a clean React component tree.
+The marketing site for **Carmonia**, a UK car finance broker: soft-search quotes with no
+impact on your credit score, a panel of UK lenders, bad-credit-friendly deals, and a large
+range of cars to choose from.
 
-Built to match the original's stack and design system: **Vite + React + TypeScript + Tailwind CSS v4**,
-**shadcn/ui** (Radix UI primitives) for the interactive components, the **OpenRunde** typeface, and
-the original's exact colour tokens (near-black `#181925` text, `#918df6` purple accent, and the full
-semantic palette).
+Stack: **Vite + React + TypeScript + Tailwind CSS v4**, **shadcn/ui** (Radix UI primitives)
+for the interactive components, **Mapbox GL** for the UK lender map, and a single-accent
+design system (blue `--primary` over neutrals) driven by the tokens in `src/index.css`.
 
 ## shadcn/ui foundation
 
-Every interactive and structural component is built on shadcn/ui primitives in `src/components/ui/`
-(installed via `npx shadcn@latest add`, backed by `radix-ui` + `class-variance-authority` + the
-`cn` helper in `src/lib/utils.ts`):
+The interactive and structural components are built on shadcn/ui primitives in
+`src/components/ui/` (backed by `radix-ui` + `class-variance-authority` + the `cn` helper in
+`src/lib/utils.ts`). The ones wired into the page:
 
 | Primitive | Used by |
 | --- | --- |
-| `Button` | Hero, CTA, Pricing, nav — via a thin `Button` adapter that maps primary/secondary/soft + sm/md |
-| `DropdownMenu` | Navbar Features menu + mobile menu |
-| `Tabs` | Dashboard preview tab bar |
+| `Button` | Hero, CTA, Pricing, nav — via a thin `Button` adapter mapping primary/secondary/soft + sm/md |
+| `Card` | Every feature / how-it-works / pricing card |
+| `Slider` | Pricing (loan amount / term) |
 | `Accordion` | FAQ |
-| `Slider` · `ToggleGroup` · `Separator` | Pricing (events slider, monthly/yearly, dividers) |
 | `Tooltip` | Comparison table partial/unavailable cells |
 | `Badge` | Section eyebrow labels |
-| `Card` | Every feature / how-it-works / integration / pricing card |
 
-The shadcn semantic tokens (`--primary`, `--muted`, `--accent`, `--border`, `--ring`, …) are mapped
-onto the visitors palette in `src/index.css` via `@theme inline`, so the primitives inherit the
-visitors.now look out of the box. The brand/feature SVGs (`icons.tsx`) and the generated marble
-`Avatar` remain custom, since they're content rather than UI primitives.
+The shadcn semantic tokens (`--primary`, `--muted`, `--accent`, `--border`, `--ring`, …) are
+mapped via `@theme inline` in `src/index.css`, so the primitives inherit the Carmonia look out
+of the box. The brand/feature SVGs (`icons.tsx`) and the brand logos in `public/images/` are
+custom, since they're content rather than UI primitives.
 
 ## Run it
 
@@ -39,48 +37,58 @@ npm run build      # type-check + production build to dist/
 npm run preview    # serve the production build
 ```
 
+The UK lender map needs a Mapbox token — copy `.env.example` to `.env.local` and set
+`VITE_MAPBOX_TOKEN`. Without one, the map area on the "Panel of lenders" card simply isn't
+rendered; everything else runs as normal.
+
 ## What's included
 
-Every section of the homepage, rebuilt as its own component:
+Every section of the page is its own component, composed in `src/App.tsx`:
 
 | Section | Component | Notes |
 | --- | --- | --- |
-| Floating nav | `Navbar` | Dark "pill" bar, Features dropdown, mobile menu |
-| Hero | `Hero` | Animated "We hit $1K MRR" shimmer badge + CTAs |
-| Social proof | `LogoCloud` | Customer logos |
-| Product shot | `DashboardPreview` | Switchable Dashboard/Profiles/Funnels/Performance/Realtime tabs |
-| Value props | `ValueProps` | Lightweight / 5-minute setup / Independent |
-| Features | `Features` | Revenue bars, live **visitor globe**, scrolling **profiles**, animated **Experience Score** ring, integrations |
-| How it works | `HowItWorks` | Framework-logo marquee, revenue connection, insight bars |
-| Comparison | `Comparison` | Full Visitors vs GA / Plausible / Fathom matrix |
-| Pricing | `Pricing` | Interactive events slider, monthly/yearly toggle, live "people/min" meter |
+| Floating nav | `Navbar` | Dark "pill" bar, Features menu, mobile menu, wordmark |
+| Hero | `Hero` | Headline + CTAs over the phone scene |
+| App scene | `Showcase` | Hand + phone ringed by finance-notification cards (pre-approved, rate locked, signed…) |
+| Pricing | `Pricing` | Representative-example calculator with live monthly-payment readout |
+| Value props | `ValueProps` | Soft search · panel of lenders · drive away |
+| Features | `Features` | The four feature cards (below) |
+| How it works | `HowItWorks` | Step-by-step from quote to keys |
+| Comparison | `Comparison` | Carmonia vs other finance types (PCP / HP / dealer / bank loan) |
 | FAQ | `FAQ` | Expandable accordion |
 | Closing CTA | `CTA` | |
-| Footer | `Footer` | Link columns + rising concentric-ring globe |
+| Footer | `Footer` | Link columns + FCA regulatory small print |
 
-Shared pieces live in `src/components/` — `Button`, `SectionHeader`/`Badge`, the `icons` set, and
-a deterministic marble `Avatar` generator used by the globe and profile rows.
+### Feature cards (`src/components/features/`)
+
+| Card | Title | Visual |
+| --- | --- | --- |
+| `QuoteCard` | Soft search quote | Animated eligibility ring that fills to a "Perfect match" with a confetti burst |
+| `LendersCard` | Panel of lenders | `UkMap` — a Mapbox UK globe with a live "<name> from <city> · Approved" feed |
+| `BadCreditCard` | Bad credit specialists | Looping credit-score dial (the score rolls, the band badge swaps) |
+| `CarsCard` | Find your dream car | Insert-at-top feed of approved cars, in lock-step with the credit dial via `featureTick` |
+
+The credit-score dial and the approved-cars feed advance off one shared interval
+(`featureTick.ts`) so they always change on the same beat.
 
 ## Theming
 
-`src/index.css` is a **standard shadcn/ui theme** — the same flat, semantic token set you'd get
-from the shadcn CLI or [tweakcn](https://tweakcn.com) (`--background`, `--foreground`, `--primary`,
-`--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--ring`, `--card`, `--popover`,
-`--chart-*`, `--sidebar-*`, fonts, radius, shadow scale), with both `:root` and `.dark`.
+`src/index.css` is a standard shadcn/ui theme — the flat, semantic token set (`--background`,
+`--foreground`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`,
+`--ring`, `--card`, `--popover`, `--chart-*`, fonts, radius, shadow scale), with both `:root` and
+`.dark`. Type is **SF Pro** via the Apple system stack; icons are Google **Material Symbols**
+(subset loaded in `index.html`) plus a few inline SVGs.
 
-Components use **only** those semantic utilities (`bg-background`, `text-foreground`,
-`text-muted-foreground`, `bg-muted`, `bg-accent`, `bg-primary`, `text-primary`, `border-border`,
-`bg-card`…). The blue accent everywhere is driven by **`--primary`** — even the visitor globe,
-marble avatars, and footer rings derive from it via `color-mix`. So:
+Components use only the semantic utilities (`bg-background`, `text-foreground`,
+`text-muted-foreground`, `bg-muted`, `bg-primary`, `text-primary`, `border-border`, `bg-card`…).
+The blue accent everywhere is driven by **`--primary`**, with map pins and badges derived from it
+via `color-mix` — so re-theming the whole site is mostly a matter of editing `--primary` and the
+greys, or pasting any shadcn-compatible theme over the `:root`/`.dark` blocks.
 
-- **Re-theme the whole site** by editing `--primary` (and the greys) in `src/index.css`, or
-- **Paste any tweakcn theme** over the `:root`/`.dark` blocks and it just works.
-
-Custom keyframes (shimmer, marquee, float, ping, accordion) and a couple of utilities
+Custom keyframes (shimmer, marquee, `feed-in`, `uk-pin-*`, accordion) and a couple of utilities
 (`mask-fade-*`, `no-scrollbar`) live at the bottom of the file.
 
 ## Assets
 
-Customer logos and the dashboard screenshot live in `public/images/`; the OpenRunde
-font files in `public/fonts/`. This is a design reference rebuild — all original branding,
-copy, and assets belong to Visitors.
+Brand logos live in `public/images/` (`bmw.svg`, `audi.svg`, `tesla.png`, …) and the hero phone
+cutout in `public/images/hero-phone-cutout.png`.

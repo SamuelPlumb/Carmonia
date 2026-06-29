@@ -8,8 +8,7 @@ import { BadgeCheck } from "./icons";
  * "approvals feed": one city dot pops in at a time, in sequence, and a badge at
  * the bottom announces "<Name> from <City> · Approved" with a verified tick.
  *
- * Loaded lazily (see UkMap) so mapbox-gl is code-split out of the main bundle,
- * the same way visitors.now splits its globe-impl chunk.
+ * Loaded lazily (see UkMap) so mapbox-gl is code-split out of the main bundle.
  */
 
 type Approval = { name: string; city: string; lng: number; lat: number };

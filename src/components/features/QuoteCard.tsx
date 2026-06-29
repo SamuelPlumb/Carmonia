@@ -164,7 +164,7 @@ function ScoreRing() {
   );
 }
 
-export function PerformanceCard() {
+export function QuoteCard() {
   return (
     <Card className="flex flex-col bg-muted rounded-xl min-h-[280px] overflow-hidden relative border-0 shadow-none gap-0 py-0">
       <FeatureText

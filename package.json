@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Faithful rebuild of the visitors.now homepage — privacy-friendly analytics landing page.",
+  "description": "Carmonia — UK car finance landing page. Soft-search quotes, a panel of lenders, and bad-credit-friendly deals.",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

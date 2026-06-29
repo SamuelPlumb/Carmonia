@@ -5,8 +5,8 @@ import { FeatureText } from "./FeatureText";
 import { useFeatureTick } from "./featureTick";
 import { Card } from "@/components/ui/card";
 
-// Five even bands across 0–999 (each one fifth of the range) with Experian's
-// score-dial palette. Equal score widths mean the fill tracks the score
+// Five even bands across 0–999 (each one fifth of the range) with a familiar
+// UK credit-score dial palette. Equal score widths mean the fill tracks the score
 // linearly — the dial reads evenly: 999 fills it completely, 0 empties it.
 const BANDS = [
   { name: "Bad", min: 0, max: 199, color: "#BD2327" }, // red
@@ -95,7 +95,7 @@ function ScoreDial() {
   const displayRef = useRef(score);
 
   // Advance on the shared feature tick, so the dial changes at the exact same
-  // moment a new car appears in the profiles card. Held still under reduced motion.
+  // moment a new car appears in the cars card. Held still under reduced motion.
   const reduceMotion =
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   useFeatureTick(() => setIdx((i) => (i + 1) % SCORES.length), !reduceMotion);
