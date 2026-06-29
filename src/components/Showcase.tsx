@@ -1,5 +1,5 @@
 import type { CSSProperties, ComponentType, SVGProps } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Percent,
   CheckCircle,
@@ -35,8 +35,8 @@ const PRIMARY = "var(--primary)";
 const ROWS: Row[] = [
   {
     w: 1140,
-    rx: 50,  // tuck this right card in so its icon sits behind the phone
-    lx: 80,  // tuck this right card in so its icon sits behind the phone
+    rx: 60,  // tuck this right card in so its icon sits behind the phone
+    lx: 130,  // tuck this left card in so its icon sits behind the phone
     l: { card: { Icon: BmwBadge, tint: PRIMARY, title: "You've paid off your car 🎉 ", desc: "The BMW 330d is all yours" }, o: 0.2 },
     r: { card: { Icon: Car, tint: PRIMARY, title: "You're pre-approved 🚗", desc: "Up to £15,000 towards your next car" }, o: 1 },
   },
@@ -61,7 +61,7 @@ const ROWS: Row[] = [
   },
   {
     w: 1320,
-    lx: 110,
+    lx: 130,
     l: { card: { Icon: Signature, tint: PRIMARY, title: "Your agreement's ready to sign ✍️", desc: "£312/mo at 9.9% APR" }, o: 1 },
     r: { card: { Icon: CheckCircle, tint: PRIMARY, title: "Repayment received ✅", desc: "£312 received, next due 1 Aug" }, o: 1 },
   },
@@ -89,7 +89,7 @@ function NotifCard({
       className="shrink-0"
       style={{
         opacity: op,
-        transform: shift ? `translateX(${shift}px)` : undefined,
+        transform: shift ? `translateX(calc(${shift}px * var(--hero-spread, 1)))` : undefined,
         transition: "opacity 0.7s ease",
       }}
     >
@@ -110,10 +110,50 @@ function NotifCard({
 const FADE_START = 0.6;  // p at which the cards begin to fade
 const FADE_END = 0.9;    // p by which they're fully gone (≈ full hero scroll)
 
+// The scene responds to viewport HEIGHT (à la Flighty), not just width, via one
+// --hero-scale factor: the phone shrinks, and the notification ring contracts
+// toward the centre. The cards keep their natural size — only the spread (row
+// widths + inward nudges) tightens, so they slide closer together rather than
+// scaling. Tuned so a ~850px-tall viewport puts the phone near Flighty's
+// 452×616; tall monitors cap at the full 722×984.
+const PHONE_MAX_H = 984;    // px — full height (scale 1) at/above the cap
+const PHONE_MIN_H = 540;    // px — floor on very short viewports
+const HEIGHT_RATIO = 0.72;  // phone height as a fraction of viewport height
+
+// How hard the card spread follows the phone's shrink. 1 = cards converge as
+// fast as the phone scales down (too aggressive); 0.4 = the inward movement is
+// damped to ~40% of that, so they drift together gently as the phone shrinks.
+const SPREAD_DAMP = 0.4;
+
+// A small constant widening added to every row so the cards sit a touch further
+// out at all sizes (each card moves out by half this), keeping their icons/text
+// from tucking too far behind the phone. Applied before --hero-spread so it
+// scales along with everything else.
+const SPREAD_PAD = 64; // px added to each row's width
+
 export function Showcase() {
   const sceneRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   const [fade, setFade] = useState(1);
+
+  // Size the scene from viewport height: write --hero-scale on the scene so both
+  // the phone (.phone-img) and the notification ring read the same factor. Layout
+  // effect + initial run so the size is correct on first paint (no flash).
+  useLayoutEffect(() => {
+    const el = sceneRef.current;
+    if (!el) return;
+    const apply = () => {
+      const h = Math.min(PHONE_MAX_H, Math.max(PHONE_MIN_H, window.innerHeight * HEIGHT_RATIO));
+      const scale = h / PHONE_MAX_H;
+      el.style.setProperty("--hero-scale", String(scale));
+      // Damped factor for the card spread so they converge far more gently than
+      // the phone scales (see SPREAD_DAMP).
+      el.style.setProperty("--hero-spread", String(1 - (1 - scale) * SPREAD_DAMP));
+    };
+    apply();
+    window.addEventListener("resize", apply);
+    return () => window.removeEventListener("resize", apply);
+  }, []);
 
   // Flip the card tiers once the phone has scrolled up into focus (reversible),
   // and fade the cards out entirely as we approach full hero scroll.
@@ -151,7 +191,14 @@ export function Showcase() {
           style={{ opacity: fade }}
         >
           {ROWS.map((row, ri) => (
-            <div key={ri} className="flex justify-between items-start" style={{ width: row.w }}>
+            <div
+              key={ri}
+              className="flex justify-between items-start"
+              // Only the spread scales (damped --hero-spread); the cards
+              // (shrink-0) keep their size, so a tighter row just slides them
+              // toward centre. SPREAD_PAD nudges both cards a touch further out.
+              style={{ width: `calc((${row.w}px + ${SPREAD_PAD}px) * var(--hero-spread, 1))` }}
+            >
               <NotifCard card={row.l.card} opacity={row.l.o} active={active} shift={row.lx} delay={440 + ri * 2 * 55} />
               {row.r && <NotifCard card={row.r.card} opacity={row.r.o} active={active} shift={row.rx != null ? -row.rx : undefined} delay={440 + (ri * 2 + 1) * 55} />}
             </div>
