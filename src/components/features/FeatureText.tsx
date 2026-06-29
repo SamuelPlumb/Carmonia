@@ -21,7 +21,7 @@ interface FeatureTextProps {
 
 export function FeatureText({ accent, icon, title, subtitle, items }: FeatureTextProps) {
   return (
-    <div className="flex flex-col p-6 px-8 gap-3 items-start">
+    <div className="flex flex-col p-4 md:p-6 md:px-8 gap-3 items-start">
       <IconBox>{icon}</IconBox>
       <div className="flex flex-col gap-0.5 max-w-72">
         <h3 className={`text-2xl/7 font-medium ${ACCENT_TEXT[accent]}`}>{title}</h3>

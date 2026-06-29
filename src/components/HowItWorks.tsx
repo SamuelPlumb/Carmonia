@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 function StepCard({ step, lead, rest }: { step: number; lead: string; rest: string }) {
   return (
     <Card className="bg-muted rounded-xl overflow-hidden border-0 shadow-none gap-0 py-0">
-      <div className="p-6 flex flex-col items-center gap-3">
+      <div className="p-4 md:p-6 flex flex-col items-center gap-3">
         <IconBox>
           <span className="text-base font-semibold text-primary">{step}</span>
         </IconBox>
