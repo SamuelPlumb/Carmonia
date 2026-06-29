@@ -13,7 +13,7 @@ import {
 } from "./icons";
 
 /* Hero scene: the hand + phone (756×1024, optically centred, top layer) ringed by
-   notification cards laid out like Flighty's "At the airport" state — five rows,
+   notification cards laid out as staggered, alternating rows — five rows,
    each pairing a left + right card across a variable gap, with cards alternating
    foreground (opacity 1) / background (opacity 0.2) for depth. No rotation, no
    scroll parallax; the load cascade still plays. */
@@ -30,8 +30,8 @@ type Row = { w: number; l: Slot; r?: Slot; lx?: number; rx?: number };  // lx/rx
 // and let opacity/depth (not colour) carry the visual hierarchy.
 const PRIMARY = "var(--primary)";
 
-// Variable row widths create the staggered scatter; opacity (o) follows the
-// Framer's 0.2/1 alternation so foreground cards pop and the rest recede.
+// Variable row widths create the staggered scatter; opacity (o) follows an
+// alternating 0.2/1 rhythm so foreground cards pop and the rest recede.
 const ROWS: Row[] = [
   {
     w: 1140,
@@ -110,12 +110,12 @@ function NotifCard({
 const FADE_START = 0.6;  // p at which the cards begin to fade
 const FADE_END = 0.9;    // p by which they're fully gone (≈ full hero scroll)
 
-// The scene responds to viewport HEIGHT (à la Flighty), not just width, via one
+// The scene responds to viewport HEIGHT, not just width, via one
 // --hero-scale factor: the phone shrinks, and the notification ring contracts
 // toward the centre. The cards keep their natural size — only the spread (row
 // widths + inward nudges) tightens, so they slide closer together rather than
-// scaling. Tuned so a ~850px-tall viewport puts the phone near Flighty's
-// 452×616; tall monitors cap at the full 722×984.
+// scaling. Tuned so a ~850px-tall viewport puts the phone near 452×616; tall
+// monitors cap at the full 722×984.
 const PHONE_MAX_H = 984;    // px — full height (scale 1) at/above the cap
 const PHONE_MIN_H = 540;    // px — floor on very short viewports
 const HEIGHT_RATIO = 0.72;  // phone height as a fraction of viewport height

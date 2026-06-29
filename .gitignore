@@ -12,3 +12,6 @@ logs
 npm-debug.log*
 .vite
 _shots
+
+# TypeScript incremental build cache (generated)
+*.tsbuildinfo

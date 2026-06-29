@@ -1,8 +1,8 @@
 import { SectionHeader } from "./SectionHeader";
-import { PerformanceCard } from "./features/PerformanceCard";
-import { RealtimeCard } from "./features/RealtimeCard";
+import { QuoteCard } from "./features/QuoteCard";
+import { LendersCard } from "./features/LendersCard";
 import { BadCreditCard } from "./features/BadCreditCard";
-import { ProfilesCard } from "./features/ProfilesCard";
+import { CarsCard } from "./features/CarsCard";
 
 export function Features() {
   return (
@@ -13,10 +13,10 @@ export function Features() {
         subtitle="From a soft-search quote to choosing your car, we make every step of getting car finance straightforward."
       />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <PerformanceCard />
-        <RealtimeCard />
+        <QuoteCard />
+        <LendersCard />
         <BadCreditCard />
-        <ProfilesCard />
+        <CarsCard />
       </div>
     </section>
   );

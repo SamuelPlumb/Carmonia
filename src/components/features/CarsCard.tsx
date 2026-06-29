@@ -4,7 +4,7 @@ import { FeatureText } from "./FeatureText";
 import { useFeatureTick } from "./featureTick";
 import { Card } from "@/components/ui/card";
 
-type Profile = {
+type CarListing = {
   brand: string; // marque — keys the logo asset (public/images/<brand>.png)
   name: string; // car model (display)
   price: string; // listing price
@@ -13,7 +13,7 @@ type Profile = {
 
 // Interleaved by brand so the visible window shows a varied mix straight away
 // (the feed seeds the first MAX_ROWS in order, then cycles through the rest).
-const PROFILES: Profile[] = [
+const CARS: CarListing[] = [
   { brand: "Volkswagen", name: "Volkswagen Golf", price: "£14,995", year: "2020" },
   { brand: "BMW", name: "BMW 3 Series", price: "£17,995", year: "2020" },
   { brand: "Tesla", name: "Tesla Model 3", price: "£17,995", year: "2021" },
@@ -36,17 +36,17 @@ const PROFILES: Profile[] = [
   { brand: "Vauxhall", name: "Vauxhall Astra", price: "£9,995", year: "2019" },
 ];
 
-// Insert-at-top feed (mirrors the visitors.now realtime list): keep `ROW_H` in
-// sync with the `feed-in` keyframe in index.css. A new row arrives on each shared
-// feature tick (see featureTick.ts), in lock-step with the credit-score dial.
+// Insert-at-top feed of approved cars: keep `ROW_H` in sync with the `feed-in`
+// keyframe in index.css. A new row arrives on each shared feature tick (see
+// featureTick.ts), in lock-step with the credit-score dial.
 const ROW_H = 44;
 const ENTER_MS = 560;
 const MAX_ROWS = 9; // fills the 320px window with a couple sliding under the fade
 
-type FeedRow = { id: number; fresh: boolean; profile: Profile };
+type FeedRow = { id: number; fresh: boolean; car: CarListing };
 
 function Row({ row }: { row: FeedRow }) {
-  const p = row.profile;
+  const p = row.car;
   return (
     <div
       className="w-full flex items-center shrink-0 gap-3 overflow-hidden px-4 md:px-8"
@@ -69,13 +69,13 @@ function Row({ row }: { row: FeedRow }) {
   );
 }
 
-export function ProfilesCard() {
+export function CarsCard() {
   // Seed a full window so the card never flashes empty; seeded rows don't animate.
   const [rows, setRows] = useState<FeedRow[]>(() =>
     Array.from({ length: MAX_ROWS }, (_, i) => ({
       id: i,
       fresh: false,
-      profile: PROFILES[i % PROFILES.length],
+      car: CARS[i % CARS.length],
     })),
   );
   const next = useRef(MAX_ROWS);
@@ -86,7 +86,7 @@ export function ProfilesCard() {
       const row: FeedRow = {
         id: next.current,
         fresh: true,
-        profile: PROFILES[next.current % PROFILES.length],
+        car: CARS[next.current % CARS.length],
       };
       next.current += 1;
       return [row, ...prev].slice(0, MAX_ROWS);

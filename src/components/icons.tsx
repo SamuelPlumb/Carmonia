@@ -84,7 +84,6 @@ export const Speedometer = symbol("speed", 20);
 export const Clock = symbol("schedule", 20);
 export const Heart = symbol("favorite", 20);
 export const DollarCircle = symbol("monetization_on", 20);
-export const Globe = symbol("public", 20);
 export const Smiley = symbol("mood", 16);
 export const ArrowRight = symbol("arrow_forward", 16);
 export const Sparkle = symbol("auto_awesome", 16);
