@@ -164,7 +164,7 @@ function ScoreDial() {
       <div className="flex items-center gap-2 rounded-md bg-white py-1.5 pl-1.5 pr-4 shadow-md ring-1 ring-black/5">
         <BandBadge band={band} />
         <span className="text-sm font-medium text-muted-foreground whitespace-nowrap">
-          You're always considered by our lenders
+          Always considered by our lenders
         </span>
       </div>
     </div>
