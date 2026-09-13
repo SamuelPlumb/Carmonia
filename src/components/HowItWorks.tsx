@@ -13,8 +13,6 @@ function StepCard({ step, lead, rest }: { step: number; lead: string; rest: stri
           {lead} <span className="text-muted-foreground">{rest}</span>
         </h3>
       </div>
-      {/* Visual area — fixed 200px height, no divider; drop a background image in here */}
-      <div className="h-[200px] relative overflow-hidden" />
     </Card>
   );
 }
